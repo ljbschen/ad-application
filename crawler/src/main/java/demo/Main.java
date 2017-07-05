@@ -11,17 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    private static final String FILENAME = "rawQuery.txt";
+    private static final String FILENAME = "crawler/rawQuery2.txt";
     private static final String OUTPUT = "ad.json";
     final static Logger logger = Logger.getLogger(Main.class);
 
     public static void main(String[] args) {
         logger.debug("Start app...");
-        try {
-            FeedsHandler feedsHandler = new FeedsHandler(FILENAME);
-            List<Feed> feeds = feedsHandler.generateFeeds();
-            List<Ad> adsList = new ArrayList<Ad>();
-            for (Feed feed : feeds) {
+
+        FeedsHandler feedsHandler = new FeedsHandler(FILENAME);
+        List<Feed> feeds = feedsHandler.generateFeeds();
+        List<Ad> adsList = new ArrayList<Ad>();
+        for (Feed feed : feeds) {
+            try {
                 Crawler crawler = new Crawler(feed);
                 List<Ad> ads = crawler.getAmazonProds();
                 adsList.addAll(ads);
@@ -31,11 +32,11 @@ public class Main {
                     e.printStackTrace();
                     logger.error(e.getMessage());
                 }
+                writeToFile(adsList);
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(e.getMessage());
             }
-            writeToFile(adsList);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
         }
     }
 
