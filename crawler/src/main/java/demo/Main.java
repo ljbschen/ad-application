@@ -5,18 +5,29 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    private static final String FILENAME = "crawler/rawQuery2.txt";
+    private static final String FILENAME = "crawler/rawQuery.txt";
     private static final String OUTPUT = "ad.json";
     final static Logger logger = Logger.getLogger(Main.class);
 
     public static void main(String[] args) {
         logger.debug("Start app...");
+        try {
+            File file = new File("ad.json");
+            if (file.delete()) {
+                System.out.println(file.getName() + " is deleted!");
+            } else {
+                System.out.println("Delete operation is failed.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+
 
         FeedsHandler feedsHandler = new FeedsHandler(FILENAME);
         List<Feed> feeds = feedsHandler.generateFeeds();
@@ -38,13 +49,15 @@ public class Main {
                 logger.error(e.getMessage());
             }
         }
+
     }
 
     private static void writeToFile(List<Ad> ads) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             //Convert object to JSON string and save into file directly
-            mapper.writeValue(new File(OUTPUT), ads);
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(OUTPUT, true))); // append mode file writer
+            mapper.writeValue(out, ads);
 
             //Convert object to JSON string and pretty print
             String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(ads);
