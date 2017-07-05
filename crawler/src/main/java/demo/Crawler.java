@@ -9,6 +9,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Crawler {
     final static Logger logger = Logger.getLogger(Crawler.class);
@@ -24,7 +25,7 @@ public class Crawler {
     public List<Ad> getAmazonProds() {
         String query = this.feed.getQuery();
         List<Ad> ads = null;
-        for (int i = 1; i < 2; i++) {
+        for (int i = 1; i < 4; i++) {
             String url = AMAZON_QUERY_URL + query + "&page=" + i;
             System.out.println("url" + url);
             try {
@@ -34,7 +35,6 @@ public class Crawler {
                 List<Element> prods = doc.getElementsByClass("s-result-item celwidget ");
                 logger.info("number of prod: " + prods.size());
                 ads = parseToAds(prods);
-
             } catch (IOException e) {
                 e.printStackTrace();
                 logger.error(e.getMessage());
@@ -48,11 +48,15 @@ public class Crawler {
         for (Integer i = 0; i < prods.size(); i++) {
             String id = "result_" + i.toString();
             Element prodsById = prods.get(i).getElementById(id);
-//            String asin = prodsById.attr("data-asin");
-//            System.out.println("prod asin: " + asin);
-            // get title
             String title = "", thumbnail = "", description = "", brand = "", detail_url = "";
+            String query = this.feed.getQuery();
+            int adId = ads.size();
+            int campaignId = this.feed.getCampaignID();
+            double bidPrice = this.feed.getBid();
+            int query_group_id = this.feed.getQueryGroupID();
             double price = 0;
+
+            // get title
             Elements titleEleList = prodsById.getElementsByAttribute("title");
             if (titleEleList.size() > 0) {
                 title = titleEleList.get(0).attr("title");
@@ -73,14 +77,11 @@ public class Crawler {
 //            #result_17 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(2) > div.a-column.a-span5.a-span-last > div:nth-child(2)
 
             // get description
-            Element dLevel1 = prodsById.getElementsByClass("a-column a-span5 a-span-last").get(0);
-            Elements dLevel2List = dLevel1.select("div");
-            Element dLevel2 = dLevel2List.get(dLevel2List.size() - 1);
-
+//            Element dLevel1 = prodsById.getElementsByClass("a-column a-span5 a-span-last").get(0);
+//            Elements dLevel2 = dLevel1.select("div:nth-child(" + dLevel1.select("div").size() + ")");
+//            Element dElement = dLevel2.select("span:nth-child(" + dLevel2.select("span").size() + ")").get(0);
 //            System.out.println("description is " + dElement.text());
 
-//            #result_0 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div.a-row.a-spacing-small > div:nth-child(2) > span:nth-child(2)
-//            #result_6 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div.a-row.a-spacing-small > div:nth-child(2) > span:nth-child(2)
             // get brand
             brand = prodsById.select("#" + id + " > div > div > div > div.a-fixed-left-grid-col.a-col-right > div.a-row.a-spacing-small > div:nth-child(2) > span:nth-child(2)").text();
 //            System.out.println("brand is " + brand);
@@ -96,9 +97,24 @@ public class Crawler {
             if (priceWholeList.size() > 0 && priceFragList.size() > 0) {
                 price = Integer.parseInt(priceWholeList.get(0).text().replace(",", "")) + Double.parseDouble(priceFragList.get(0).text()) / 100;
             }
-//            System.out.println("price is " + price);
+
+            Ad ad = new Ad();
+            ad.setAdId(adId);
+            ad.setCampaignId(campaignId);
+            ad.setBidPrice(bidPrice);
+            ad.setPosition(new Random(2).nextInt() + 1);
+            ad.setTitle(title);
+            ad.setPrice(price);
+            ad.setThumbnail(thumbnail);
+            ad.setDescription("");
+            ad.setBrand(brand);
+            ad.setDetail_url(detail_url);
+            ad.setQuery(query);
+            ad.setQuery_group_id(query_group_id);
+            ad.setCategory("");
+            ads.add(ad);
         }
-        return null;
+        return ads;
     }
 
 }

@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import java.util.List;
 
 public class Main {
-    private static final String FILENAME = "rawQuery.txt";
+    private static final String FILENAME = "rawQuery2.txt";
     final static Logger logger = Logger.getLogger(Main.class);
 
     public static void main(String[] args) {
