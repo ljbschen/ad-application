@@ -7,6 +7,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -85,10 +86,20 @@ public class Crawler {
             // get brand
             brand = prodsById.select("#" + id + " > div > div > div > div.a-fixed-left-grid-col.a-col-right > div.a-row.a-spacing-small > div:nth-child(2) > span:nth-child(2)").text();
 //            System.out.println("brand is " + brand);
+
             // get detail_url
             Elements detailUrlList = prodsById.getElementsByAttribute("href");
             if (detailUrlList.size() > 0) {
                 detail_url = detailUrlList.get(0).attr("href");
+                if (detail_url.contains("/gp/slredirect")) {
+                    detail_url = detail_url.substring(detail_url.indexOf("url=") + 4);
+                    try {
+                        detail_url = java.net.URLDecoder.decode(detail_url, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                        logger.error(e.getMessage());
+                    }
+                }
             }
 
             // get price
