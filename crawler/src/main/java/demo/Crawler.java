@@ -78,9 +78,9 @@ public class Crawler {
 //            #result_17 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(2) > div.a-column.a-span5.a-span-last > div:nth-child(2)
 
             // get description
-            Elements dElements = prodsById.getElementsByClass("a-column a-span5 a-span-last").get(0).select("div");
+            Elements dElements = prodsById.getElementsByClass("a-column a-span5 a-span-last");
             if (dElements.size() > 0) {
-                description = dElements.get(0).text();
+                description = dElements.get(0).select("div").get(0).text();
             }
 
 //
