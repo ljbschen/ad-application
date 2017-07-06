@@ -79,7 +79,10 @@ public class Crawler {
 
             // get description
             Elements dElements = prodsById.getElementsByClass("a-column a-span5 a-span-last").get(0).select("div");
-            description = dElements.get(0).text();
+            if (dElements.size() > 0) {
+                description = dElements.get(0).text();
+            }
+
 //
 //            System.out.println(dLevel1List.size());
 //            Elements dLevel1 = dLevel1List.select("> div:nth-child(" + dLevel1List.size() + ")");
@@ -89,7 +92,10 @@ public class Crawler {
 //            System.out.println("description is " + dElement.text());
 
             // get brand
-            brand = prodsById.select("#" + id + " > div > div > div > div.a-fixed-left-grid-col.a-col-right > div.a-row.a-spacing-small > div:nth-child(2) > span:nth-child(2)").text();
+            Elements brandElement = prodsById.select("#" + id + " > div > div > div > div.a-fixed-left-grid-col.a-col-right > div.a-row.a-spacing-small > div:nth-child(2) > span:nth-child(2)");
+            if (brandElement.size() > 0) {
+                brand = brandElement.text();
+            }
 //            System.out.println("brand is " + brand);
 
             // get detail_url
