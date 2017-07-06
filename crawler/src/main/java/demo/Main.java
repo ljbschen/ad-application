@@ -19,9 +19,9 @@ public class Main {
         try {
             File file = new File("ad.json");
             if (file.delete()) {
-                System.out.println(file.getName() + " is deleted!");
+                logger.info(file.getName() + " is deleted!");
             } else {
-                System.out.println("Delete operation is failed.");
+                logger.warn("Delete operation is failed.");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,8 +60,8 @@ public class Main {
             mapper.writeValue(out, ads);
 
             //Convert object to JSON string and pretty print
-            String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(ads);
-            System.out.println(jsonInString);
+//            String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(ads);
+//            System.out.println(jsonInString);
         } catch (JsonGenerationException e) {
             e.printStackTrace();
             logger.error(e.getMessage());

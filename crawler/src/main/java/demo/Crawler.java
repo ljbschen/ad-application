@@ -28,7 +28,6 @@ public class Crawler {
         List<Ad> ads = null;
         for (int i = 1; i < 4; i++) {
             String url = AMAZON_QUERY_URL + query + "&page=" + i;
-            System.out.println("url" + url);
             try {
                 Document doc = Jsoup.connect(url).maxBodySize(0).userAgent(USER_AGENT).timeout(10000).get();
                 Integer docSize = doc.text().length();
