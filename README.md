@@ -1,6 +1,11 @@
 # ad-application
 Crawler is an application that collects products info from Amazon.
 
+#### Requirements
+* Java Platform (JDK) 8
+* Apache Maven
+
+
 #### Run
 ```aidl
 git clone https://github.com/ljbschen/ad-application.git
