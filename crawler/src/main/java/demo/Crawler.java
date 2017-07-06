@@ -28,6 +28,7 @@ public class Crawler {
         List<Ad> ads = null;
         for (int i = 1; i < 4; i++) {
             String url = AMAZON_QUERY_URL + query + "&page=" + i;
+            logger.info(url);
             try {
                 Document doc = Jsoup.connect(url).maxBodySize(0).userAgent(USER_AGENT).timeout(10000).get();
                 Integer docSize = doc.text().length();
@@ -77,7 +78,12 @@ public class Crawler {
 //            #result_17 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(2) > div.a-column.a-span5.a-span-last > div:nth-child(2)
 
             // get description
-//            Element dLevel1 = prodsById.getElementsByClass("a-column a-span5 a-span-last").get(0);
+            Elements dElements = prodsById.getElementsByClass("a-column a-span5 a-span-last").get(0).select("div");
+            description = dElements.get(0).text();
+//
+//            System.out.println(dLevel1List.size());
+//            Elements dLevel1 = dLevel1List.select("> div:nth-child(" + dLevel1List.size() + ")");
+//            System.out.println(dLevel1.size());
 //            Elements dLevel2 = dLevel1.select("div:nth-child(" + dLevel1.select("div").size() + ")");
 //            Element dElement = dLevel2.select("span:nth-child(" + dLevel2.select("span").size() + ")").get(0);
 //            System.out.println("description is " + dElement.text());
@@ -116,7 +122,7 @@ public class Crawler {
             ad.setTitle(title);
             ad.setPrice(price);
             ad.setThumbnail(thumbnail);
-            ad.setDescription("");
+            ad.setDescription(description);
             ad.setBrand(brand);
             ad.setDetail_url(detail_url);
             ad.setQuery(query);
