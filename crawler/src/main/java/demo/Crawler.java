@@ -8,24 +8,23 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Crawler {
-    final static Logger logger = Logger.getLogger(Crawler.class);
+    private final static Logger logger = Logger.getLogger(Crawler.class);
     private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
     private static final String AMAZON_QUERY_URL = "https://www.amazon.com/s/ref=nb_sb_noss?field-keywords=";
 
-    private Feed feed;
-
-    public Crawler(Feed feed) {
-        this.feed = feed;
+    private int adId;
+    public Crawler() {
+        this.adId = 0;
     }
 
-    public List<Ad> getAmazonProds() {
-        String query = this.feed.getQuery();
-        List<Ad> ads = null;
+    List<Ad> getAmazonProds(Feed feed) {
+        String query = feed.getQuery();
+        List<Ad> ads = new ArrayList<Ad>();
         for (int i = 1; i < 4; i++) {
             String url = AMAZON_QUERY_URL + query + "&page=" + i;
             logger.info(url);
@@ -35,7 +34,7 @@ public class Crawler {
                 logger.info("page size: " + docSize);
                 List<Element> prods = doc.getElementsByClass("s-result-item celwidget ");
                 logger.info("number of prod: " + prods.size());
-                ads = parseToAds(prods);
+                ads.addAll(parseToAds(prods, feed));
             } catch (IOException e) {
                 e.printStackTrace();
                 logger.error(e.getMessage());
@@ -44,28 +43,26 @@ public class Crawler {
         return ads;
     }
 
-    private List<Ad> parseToAds(List<Element> prods) {
+    private List<Ad> parseToAds(List<Element> prods, Feed feed) {
         List<Ad> ads = new ArrayList<Ad>();
-        for (Integer i = 0; i < prods.size(); i++) {
+        for (Element prod : prods) {
             try {
-                String id = "result_" + i.toString();
-                Element prodsById = prods.get(i).getElementById(id);
+                String id = prod.attr("id");
                 String title = "", thumbnail = "", description = "", brand = "", detail_url = "";
-                String query = this.feed.getQuery();
-                int adId = ads.size();
-                int campaignId = this.feed.getCampaignID();
-                double bidPrice = this.feed.getBid();
-                int query_group_id = this.feed.getQueryGroupID();
+                String query = feed.getQuery();
+                int campaignId = feed.getCampaignID();
+                double bidPrice = feed.getBid();
+                int query_group_id = feed.getQueryGroupID();
                 double price = 0;
 
                 // get title
-                Elements titleEleList = prodsById.getElementsByAttribute("title");
+                Elements titleEleList = prod.getElementsByAttribute("title");
                 if (titleEleList.size() > 0) {
                     title = titleEleList.get(0).attr("title");
                 }
 
                 // get thumbnail
-                Elements imgEleList = prodsById.getElementsByClass("s-access-image cfMarker");
+                Elements imgEleList = prod.getElementsByClass("s-access-image cfMarker");
                 if (imgEleList.size() > 0) {
                     thumbnail = imgEleList.get(0).attr("src");
                 }
@@ -79,7 +76,7 @@ public class Crawler {
                 //            #result_17 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(2) > div.a-column.a-span5.a-span-last > div:nth-child(2)
 
                 // get description
-                Elements dElements = prodsById.getElementsByClass("a-column a-span5 a-span-last");
+                Elements dElements = prod.getElementsByClass("a-column a-span5 a-span-last");
                 if (dElements.size() > 0) {
                     description = dElements.get(0).select("div").get(0).text();
                 }
@@ -93,20 +90,20 @@ public class Crawler {
                 //            System.out.println("description is " + dElement.text());
 
                 // get brand
-                Elements brandElement = prodsById.select("#" + id + " > div > div > div > div.a-fixed-left-grid-col.a-col-right > div.a-row.a-spacing-small > div:nth-child(2) > span:nth-child(2)");
+                Elements brandElement = prod.select("#" + id + " > div > div > div > div.a-fixed-left-grid-col.a-col-right > div.a-row.a-spacing-small > div:nth-child(2) > span:nth-child(2)");
                 if (brandElement.size() > 0) {
                     brand = brandElement.text();
                 }
                 //            System.out.println("brand is " + brand);
 
                 // get detail_url
-                Elements detailUrlList = prodsById.getElementsByAttribute("href");
+                Elements detailUrlList = prod.getElementsByAttribute("href");
                 if (detailUrlList.size() > 0) {
                     detail_url = detailUrlList.get(0).attr("href");
                     if (detail_url.contains("/gp/slredirect")) {
                         detail_url = detail_url.substring(detail_url.indexOf("url=") + 4);
                         try {
-                            detail_url = java.net.URLDecoder.decode(detail_url, "UTF-8");
+                            detail_url = URLDecoder.decode(detail_url, "UTF-8");
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                             logger.error(e.getMessage());
@@ -115,17 +112,17 @@ public class Crawler {
                 }
 
                 // get price
-                Elements priceWholeList = prodsById.getElementsByClass("sx-price-whole");
-                Elements priceFragList = prodsById.getElementsByClass("sx-price-fractional");
+                Elements priceWholeList = prod.getElementsByClass("sx-price-whole");
+                Elements priceFragList = prod.getElementsByClass("sx-price-fractional");
                 if (priceWholeList.size() > 0 && priceFragList.size() > 0) {
                     price = Integer.parseInt(priceWholeList.get(0).text().replace(",", "")) + Double.parseDouble(priceFragList.get(0).text()) / 100;
                 }
 
                 Ad ad = new Ad();
-                ad.setAdId(adId);
+                ad.setAdId(this.adId++);
                 ad.setCampaignId(campaignId);
                 ad.setBidPrice(bidPrice);
-                ad.setPosition(new Random(2).nextInt() + 1);
+                ad.setPosition(1);
                 ad.setTitle(title);
                 ad.setPrice(price);
                 ad.setThumbnail(thumbnail);
@@ -143,5 +140,4 @@ public class Crawler {
         }
         return ads;
     }
-
 }
