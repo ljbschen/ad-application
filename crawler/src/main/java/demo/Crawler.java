@@ -47,94 +47,99 @@ public class Crawler {
     private List<Ad> parseToAds(List<Element> prods) {
         List<Ad> ads = new ArrayList<Ad>();
         for (Integer i = 0; i < prods.size(); i++) {
-            String id = "result_" + i.toString();
-            Element prodsById = prods.get(i).getElementById(id);
-            String title = "", thumbnail = "", description = "", brand = "", detail_url = "";
-            String query = this.feed.getQuery();
-            int adId = ads.size();
-            int campaignId = this.feed.getCampaignID();
-            double bidPrice = this.feed.getBid();
-            int query_group_id = this.feed.getQueryGroupID();
-            double price = 0;
+            try {
+                String id = "result_" + i.toString();
+                Element prodsById = prods.get(i).getElementById(id);
+                String title = "", thumbnail = "", description = "", brand = "", detail_url = "";
+                String query = this.feed.getQuery();
+                int adId = ads.size();
+                int campaignId = this.feed.getCampaignID();
+                double bidPrice = this.feed.getBid();
+                int query_group_id = this.feed.getQueryGroupID();
+                double price = 0;
 
-            // get title
-            Elements titleEleList = prodsById.getElementsByAttribute("title");
-            if (titleEleList.size() > 0) {
-                title = titleEleList.get(0).attr("title");
-            }
+                // get title
+                Elements titleEleList = prodsById.getElementsByAttribute("title");
+                if (titleEleList.size() > 0) {
+                    title = titleEleList.get(0).attr("title");
+                }
 
-            // get thumbnail
-            Elements imgEleList = prodsById.getElementsByClass("s-access-image cfMarker");
-            if (imgEleList.size() > 0) {
-                thumbnail = imgEleList.get(0).attr("src");
-            }
+                // get thumbnail
+                Elements imgEleList = prodsById.getElementsByClass("s-access-image cfMarker");
+                if (imgEleList.size() > 0) {
+                    thumbnail = imgEleList.get(0).attr("src");
+                }
 
-//            #result_0 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(4) > div.a-column.a-span5.a-span-last > div:nth-child(2) > span:nth-child(3)
-//            #result_1 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(4) > div.a-column.a-span5.a-span-last > div:nth-child(2) > span:nth-child(3)
-//            #result_2 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(3) > div.a-column.a-span5.a-span-last > div:nth-child(2) > span:nth-child(3)
-//            #result_3 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(2) > div.a-column.a-span5.a-span-last > div:nth-child(2) > span:nth-child(3)
-//            #result_4 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(3) > div.a-column.a-span5.a-span-last > div:nth-child(2) > span:nth-child(3)
-//            #result_5 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(2) > div.a-column.a-span5.a-span-last > div:nth-child(3) > span:nth-child(3)
-//            #result_17 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(2) > div.a-column.a-span5.a-span-last > div:nth-child(2)
+                //            #result_0 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(4) > div.a-column.a-span5.a-span-last > div:nth-child(2) > span:nth-child(3)
+                //            #result_1 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(4) > div.a-column.a-span5.a-span-last > div:nth-child(2) > span:nth-child(3)
+                //            #result_2 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(3) > div.a-column.a-span5.a-span-last > div:nth-child(2) > span:nth-child(3)
+                //            #result_3 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(2) > div.a-column.a-span5.a-span-last > div:nth-child(2) > span:nth-child(3)
+                //            #result_4 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(3) > div.a-column.a-span5.a-span-last > div:nth-child(2) > span:nth-child(3)
+                //            #result_5 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(2) > div.a-column.a-span5.a-span-last > div:nth-child(3) > span:nth-child(3)
+                //            #result_17 > div > div > div > div.a-fixed-left-grid-col.a-col-right > div:nth-child(2) > div.a-column.a-span5.a-span-last > div:nth-child(2)
 
-            // get description
-            Elements dElements = prodsById.getElementsByClass("a-column a-span5 a-span-last");
-            if (dElements.size() > 0) {
-                description = dElements.get(0).select("div").get(0).text();
-            }
+                // get description
+                Elements dElements = prodsById.getElementsByClass("a-column a-span5 a-span-last");
+                if (dElements.size() > 0) {
+                    description = dElements.get(0).select("div").get(0).text();
+                }
 
-//
-//            System.out.println(dLevel1List.size());
-//            Elements dLevel1 = dLevel1List.select("> div:nth-child(" + dLevel1List.size() + ")");
-//            System.out.println(dLevel1.size());
-//            Elements dLevel2 = dLevel1.select("div:nth-child(" + dLevel1.select("div").size() + ")");
-//            Element dElement = dLevel2.select("span:nth-child(" + dLevel2.select("span").size() + ")").get(0);
-//            System.out.println("description is " + dElement.text());
+                //
+                //            System.out.println(dLevel1List.size());
+                //            Elements dLevel1 = dLevel1List.select("> div:nth-child(" + dLevel1List.size() + ")");
+                //            System.out.println(dLevel1.size());
+                //            Elements dLevel2 = dLevel1.select("div:nth-child(" + dLevel1.select("div").size() + ")");
+                //            Element dElement = dLevel2.select("span:nth-child(" + dLevel2.select("span").size() + ")").get(0);
+                //            System.out.println("description is " + dElement.text());
 
-            // get brand
-            Elements brandElement = prodsById.select("#" + id + " > div > div > div > div.a-fixed-left-grid-col.a-col-right > div.a-row.a-spacing-small > div:nth-child(2) > span:nth-child(2)");
-            if (brandElement.size() > 0) {
-                brand = brandElement.text();
-            }
-//            System.out.println("brand is " + brand);
+                // get brand
+                Elements brandElement = prodsById.select("#" + id + " > div > div > div > div.a-fixed-left-grid-col.a-col-right > div.a-row.a-spacing-small > div:nth-child(2) > span:nth-child(2)");
+                if (brandElement.size() > 0) {
+                    brand = brandElement.text();
+                }
+                //            System.out.println("brand is " + brand);
 
-            // get detail_url
-            Elements detailUrlList = prodsById.getElementsByAttribute("href");
-            if (detailUrlList.size() > 0) {
-                detail_url = detailUrlList.get(0).attr("href");
-                if (detail_url.contains("/gp/slredirect")) {
-                    detail_url = detail_url.substring(detail_url.indexOf("url=") + 4);
-                    try {
-                        detail_url = java.net.URLDecoder.decode(detail_url, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                        logger.error(e.getMessage());
+                // get detail_url
+                Elements detailUrlList = prodsById.getElementsByAttribute("href");
+                if (detailUrlList.size() > 0) {
+                    detail_url = detailUrlList.get(0).attr("href");
+                    if (detail_url.contains("/gp/slredirect")) {
+                        detail_url = detail_url.substring(detail_url.indexOf("url=") + 4);
+                        try {
+                            detail_url = java.net.URLDecoder.decode(detail_url, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                            logger.error(e.getMessage());
+                        }
                     }
                 }
-            }
 
-            // get price
-            Elements priceWholeList = prodsById.getElementsByClass("sx-price-whole");
-            Elements priceFragList = prodsById.getElementsByClass("sx-price-fractional");
-            if (priceWholeList.size() > 0 && priceFragList.size() > 0) {
-                price = Integer.parseInt(priceWholeList.get(0).text().replace(",", "")) + Double.parseDouble(priceFragList.get(0).text()) / 100;
-            }
+                // get price
+                Elements priceWholeList = prodsById.getElementsByClass("sx-price-whole");
+                Elements priceFragList = prodsById.getElementsByClass("sx-price-fractional");
+                if (priceWholeList.size() > 0 && priceFragList.size() > 0) {
+                    price = Integer.parseInt(priceWholeList.get(0).text().replace(",", "")) + Double.parseDouble(priceFragList.get(0).text()) / 100;
+                }
 
-            Ad ad = new Ad();
-            ad.setAdId(adId);
-            ad.setCampaignId(campaignId);
-            ad.setBidPrice(bidPrice);
-            ad.setPosition(new Random(2).nextInt() + 1);
-            ad.setTitle(title);
-            ad.setPrice(price);
-            ad.setThumbnail(thumbnail);
-            ad.setDescription(description);
-            ad.setBrand(brand);
-            ad.setDetail_url(detail_url);
-            ad.setQuery(query);
-            ad.setQuery_group_id(query_group_id);
-            ad.setCategory("");
-            ads.add(ad);
+                Ad ad = new Ad();
+                ad.setAdId(adId);
+                ad.setCampaignId(campaignId);
+                ad.setBidPrice(bidPrice);
+                ad.setPosition(new Random(2).nextInt() + 1);
+                ad.setTitle(title);
+                ad.setPrice(price);
+                ad.setThumbnail(thumbnail);
+                ad.setDescription(description);
+                ad.setBrand(brand);
+                ad.setDetail_url(detail_url);
+                ad.setQuery(query);
+                ad.setQuery_group_id(query_group_id);
+                ad.setCategory("");
+                ads.add(ad);
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(e.getMessage());
+            }
         }
         return ads;
     }

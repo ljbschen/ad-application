@@ -1,6 +1,2 @@
-Prenatal DHA, 3.4, 8040,10
-home theater system , 22.0, 8060,11
-LED TV, 18.0, 8070,12
-Video Games, 6.8, 8090,14
-
-Outdoor Furniture, 22.5,8100,15
+PlayStation 3 video games,7.4,8096,14
+grill, 24.0, 8170, 22

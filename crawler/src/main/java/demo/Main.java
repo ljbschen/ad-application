@@ -6,11 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    private static final String FILENAME = "crawler/rawQuery.txt";
+    private static final String FILENAME = "crawler/rawQuery2.txt";
     private static final String OUTPUT = "ad.json";
     final static Logger logger = Logger.getLogger(Main.class);
 
@@ -31,19 +30,17 @@ public class Main {
 
         FeedsHandler feedsHandler = new FeedsHandler(FILENAME);
         List<Feed> feeds = feedsHandler.generateFeeds();
-        List<Ad> adsList = new ArrayList<Ad>();
         for (Feed feed : feeds) {
             try {
                 Crawler crawler = new Crawler(feed);
                 List<Ad> ads = crawler.getAmazonProds();
-                adsList.addAll(ads);
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     logger.error(e.getMessage());
                 }
-                writeToFile(adsList);
+                writeToFile(ads);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.getMessage());
