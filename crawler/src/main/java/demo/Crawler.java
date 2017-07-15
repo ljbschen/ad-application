@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Crawler {
     private final static Logger logger = Logger.getLogger(Crawler.class);
-    private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
+    private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; xIntel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
     private static final String AMAZON_QUERY_URL = "https://www.amazon.com/s/ref=nb_sb_noss?field-keywords=";
 
     private int adId;
