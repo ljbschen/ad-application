@@ -17,7 +17,7 @@
 
     <modules>
         <module>crawler</module>
-        <module>IndexBuilderService</module>
+        <module>IndexBuilderOfflineService</module>
         <module>SearchAdWebService</module>
     </modules>
 

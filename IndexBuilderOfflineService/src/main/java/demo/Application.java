@@ -2,8 +2,9 @@ package demo;
 
 import demo.domain.Ad;
 import demo.domain.Campaign;
-import demo.indexBuilder.IndexBuilder;
 import demo.indexBuilder.IndexBuilderService;
+import demo.indexBuilder.IndexBuilderServiceImpl;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ import java.util.ArrayList;
 public class Application {
     private static final String AdsDataFilePath = "";
     private static final String BudgetFilePath = "";
+    private final static Logger LOGGER = Logger.getLogger(Application.class);
+
+    @Autowired
+    private static IndexBuilderService indexBuilderService;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class);
@@ -53,7 +58,7 @@ public class Application {
                 }
 
                 if (!indexBuilderService.buildInvertIndex(ad) || !indexBuilderService.buildForwardIndex(ad)) {
-                    //log
+                    LOGGER.error("Can't build index on ad " + ad.adId);
                 }
             }
 
@@ -63,7 +68,7 @@ public class Application {
 
         //load budget data
         try {
-            BufferedReader brBudget = new BufferedReader(new FileReader(BudgetFilePath))
+            BufferedReader brBudget = new BufferedReader(new FileReader(BudgetFilePath));
             String line;
             while ((line = brBudget.readLine()) != null) {
                 JSONObject campaignJson = new JSONObject(line);
@@ -72,13 +77,13 @@ public class Application {
                 Campaign camp = new Campaign();
                 camp.campaignId = campaignId;
                 camp.budget = budget;
-                if (!indexBuilder.updateBudget(camp)) {
-                    //log
+                if (!indexBuilderService.updateBudget(camp)) {
+                    LOGGER.error("Can't build index on campaign " + camp.getCampaignId());
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
-        indexBuilder.Close();
     }
 }
