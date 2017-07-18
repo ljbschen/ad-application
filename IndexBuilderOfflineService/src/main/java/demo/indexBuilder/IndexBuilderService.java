@@ -46,16 +46,16 @@ public class IndexBuilderService {
     }
 
     private boolean buildInvertIndex(Ad ad) {
-        String keyWords = Utility.strJoin(new ArrayList<String>(Arrays.asList(ad.keyWords.split(","))), ",");
+        String keyWords = Utility.strJoin(new ArrayList<String>(Arrays.asList(ad.getKeyWords().split(","))), ",");
         List<String> tokens = Utility.cleanedTokenize(keyWords);
         for (String key : tokens) {
             if (memcachedClient.get(key) instanceof Set) {
                 Set<Long> adIdList = (Set<Long>) memcachedClient.get(key);
-                adIdList.add(ad.adId);
+                adIdList.add(ad.getAdId());
                 memcachedClient.set(key, EXP, adIdList);
             } else {
                 Set<Long> adIdList = new HashSet<Long>();
-                adIdList.add(ad.adId);
+                adIdList.add(ad.getAdId());
                 memcachedClient.set(key, EXP, adIdList);
             }
         }
@@ -98,17 +98,17 @@ public class IndexBuilderService {
                     if (adJson.isNull("adId") || adJson.isNull("campaignId")) {
                         continue;
                     }
-                    ad.adId = adJson.getLong("adId");
-                    ad.campaignId = adJson.getLong("campaignId");
-                    ad.brand = adJson.isNull("brand") ? "" : adJson.getString("brand");
-                    ad.price = adJson.isNull("price") ? 100.0 : adJson.getDouble("price");
-                    ad.thumbnail = adJson.isNull("thumbnail") ? "" : adJson.getString("thumbnail");
-                    ad.title = adJson.isNull("title") ? "" : adJson.getString("title");
-                    ad.detail_url = adJson.isNull("detail_url") ? "" : adJson.getString("detail_url");
-                    ad.bidPrice = adJson.isNull("bidPrice") ? 1.0 : adJson.getDouble("bidPrice");
-                    ad.pClick = adJson.isNull("pClick") ? 0.0 : adJson.getDouble("pClick");
-                    ad.category = adJson.isNull("category") ? "" : adJson.getString("category");
-                    ad.description = adJson.isNull("description") ? "" : adJson.getString("description");
+                    ad.setAdId(adJson.getLong("adId"));
+                    ad.setCampaignId(adJson.getLong("campaignId"));
+                    ad.setBrand(adJson.isNull("brand") ? "" : adJson.getString("brand"));
+                    ad.setPrice(adJson.isNull("price") ? 100.0 : adJson.getDouble("price"));
+                    ad.setThumbnail(adJson.isNull("thumbnail") ? "" : adJson.getString("thumbnail"));
+                    ad.setTitle(adJson.isNull("title") ? "" : adJson.getString("title"));
+                    ad.setDetail_url(adJson.isNull("detail_url") ? "" : adJson.getString("detail_url"));
+                    ad.setBidPrice(adJson.isNull("bidPrice") ? 1.0 : adJson.getDouble("bidPrice"));
+                    ad.setPClick(adJson.isNull("pClick") ? 0.0 : adJson.getDouble("pClick"));
+                    ad.setCategory(adJson.isNull("category") ? "" : adJson.getString("category"));
+                    ad.setDescription(adJson.isNull("description") ? "" : adJson.getString("description"));
                     JSONArray keyWordsArray = adJson.isNull("keyWords") ? null : adJson.getJSONArray("keyWords");
                     StringBuilder keyWords = new StringBuilder();
                     if (keyWordsArray != null) {
@@ -116,9 +116,9 @@ public class IndexBuilderService {
                             keyWords.append(keyWordsArray.getString(i)).append(",");
                         }
                     }
-                    ad.keyWords = keyWords.toString();
+                    ad.setKeyWords(keyWords.toString());
                     if (!buildInvertIndex(ad) || !buildForwardIndex(ad)) {
-                        LOGGER.error("Can't build index on ad " + ad.adId);
+                        LOGGER.error("Can't build index on ad " + ad.getAdId());
                     }
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage());
@@ -139,8 +139,8 @@ public class IndexBuilderService {
                 Long campaignId = campaignJson.getLong("campaignId");
                 double budget = campaignJson.getDouble("budget");
                 Campaign camp = new Campaign();
-                camp.campaignId = campaignId;
-                camp.budget = budget;
+                camp.setCampaignId(campaignId);
+                camp.setBudget(budget);
                 if (!updateBudget(camp)) {
                     LOGGER.error("Can't build index on campaign " + camp.getCampaignId());
                 }

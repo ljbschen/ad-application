@@ -26,18 +26,8 @@ public class Utility {
         return new CharArraySet(LUCENE_VERSION, stopwordsList, true);
     }
 
-    public static String strJoin(List<String> aArr, String sSep) {
-        StringBuilder sbStr = new StringBuilder();
-        for (int i = 0, il = aArr.size(); i < il; i++) {
-            if (i > 0)
-                sbStr.append(sSep);
-            sbStr.append(aArr.get(i));
-        }
-        return sbStr.toString();
-    }
-
     //remove stop word, tokenize, stem
-    public static List<String> cleanedTokenize(String input) {
+    static List<String> cleanedTokenize(String input) {
         List<String> tokens = new ArrayList<String>();
         StringReader reader = new StringReader(input.toLowerCase());
         Tokenizer tokenizer = new StandardTokenizer(LUCENE_VERSION, reader);
@@ -50,13 +40,16 @@ public class Utility {
             tokenStream.reset();
             while (tokenStream.incrementToken()) {
                 String term = charTermAttribute.toString();
+
                 tokens.add(term);
                 sb.append(term + " ");
             }
             tokenStream.end();
             tokenStream.close();
+
             tokenizer.close();
         } catch (IOException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         System.out.println("cleaned Tokens = "+ sb.toString());

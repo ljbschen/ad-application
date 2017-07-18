@@ -13,6 +13,6 @@ import javax.persistence.Table;
 public class Campaign {
     @Id
     @GeneratedValue
-    public Long campaignId;
-    public double budget;
+    private Long campaignId;
+    private double budget;
 }

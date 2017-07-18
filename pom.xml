@@ -16,11 +16,10 @@
     </parent>
 
     <modules>
-        <module>crawler</module>
+        <module>CrawlerOfflineService</module>
         <module>IndexBuilderOfflineService</module>
         <module>SearchAdWebService</module>
     </modules>
-
 
     <dependencies>
         <dependency>
