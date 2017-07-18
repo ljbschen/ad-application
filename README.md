@@ -10,7 +10,7 @@ Crawler is an application that collects products info from Amazon.
 ```aidl
 git clone https://github.com/ljbschen/ad-application.git
 mvn clean install
-java -jar crawler/target/crawler-1.0.0.jar
+java -jar CrawlerOfflineService/target/crawler-1.0.0.jar
 ```
 output file is located under the root folder named ```ad.json```
 
