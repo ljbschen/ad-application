@@ -15,7 +15,10 @@ Crawler is an application that collects products info from Amazon.
     ```
 * Create user and grant privileges
     ```aidl
-    docker exec -ti indexbuilderofflineservice_db_1 mysql -utest -p
+    docker exec -ti indexbuilderofflineservice_db_1 mysql -uroot -p
+    ```
+    Default password : ```test```
+    ```
     CREATE USER 'test'@'%' IDENTIFIED BY 'test';
     GRANT ALL PRIVILEGES ON ad_application.* TO 'test'@'%';
     ```
