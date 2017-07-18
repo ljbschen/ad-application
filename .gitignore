@@ -2,7 +2,6 @@
 *DS_Store
 !.mvn/wrapper/maven-wrapper.jar
 crawler/rawQuery3.txt
-ad.json
 
 ### STS ###
 .apt_generated
