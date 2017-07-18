@@ -1,23 +1,22 @@
 package demo.domain;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.List;
 
 @Entity
 @Data
-@Table(name = "ADS")
+@Table(name = "ads")
 public class Ad {
     @Id
     @GeneratedValue
     public Long adId;
-
     public Long campaignId;
-    public List<String> keyWords;
+    public String keyWords;
     public double relevanceScore;
     public double pClick;
     public double bidPrice;
@@ -33,5 +32,4 @@ public class Ad {
     public String detail_url; // required
     public String query; //required
     public String category;
-
 }

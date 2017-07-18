@@ -1,0 +1,10 @@
+db:
+  image: mysql:5.7.18
+  restart: always
+  environment:
+    MYSQL_ROOT_PASSWORD: test
+    MYSQL_DATABASE: ad_application
+    MYSQL_USER: test
+    MYSQL_PASSWORD: test
+  ports:
+    - "3306:3306"
