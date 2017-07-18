@@ -8,3 +8,8 @@ db:
     MYSQL_PASSWORD: test
   ports:
     - "3306:3306"
+
+memcached:
+  image: memcached
+  ports:
+    - "11211:11211"
