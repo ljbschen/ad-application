@@ -1,6 +1,5 @@
 db:
   image: mysql:5.7.18
-  restart: always
   environment:
     MYSQL_ROOT_PASSWORD: test
     MYSQL_DATABASE: ad_application
