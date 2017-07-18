@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "ads")
+@Table(name = "ADS")
 public class Ad {
     @Id
     @GeneratedValue

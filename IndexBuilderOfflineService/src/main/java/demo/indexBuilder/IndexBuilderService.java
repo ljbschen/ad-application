@@ -24,7 +24,7 @@ import java.util.*;
 public class IndexBuilderService {
     private final static Logger LOGGER = Logger.getLogger(IndexBuilderService.class);
     private final static int EXP = 0; //0: never expire
-    private static final String AdsDataFilePath = "ad.json";
+    private static final String AdsDataFilePath = "ads_0502.txt";
     private static final String BudgetFilePath = "budget.txt";
 
     private AdRepository adRepository;
@@ -45,11 +45,10 @@ public class IndexBuilderService {
         }
     }
 
-    public boolean buildInvertIndex(Ad ad) {
+    private boolean buildInvertIndex(Ad ad) {
         String keyWords = Utility.strJoin(new ArrayList<String>(Arrays.asList(ad.keyWords.split(","))), ",");
         List<String> tokens = Utility.cleanedTokenize(keyWords);
-        for (int i = 0; i < tokens.size(); i++) {
-            String key = tokens.get(i);
+        for (String key : tokens) {
             if (memcachedClient.get(key) instanceof Set) {
                 Set<Long> adIdList = (Set<Long>) memcachedClient.get(key);
                 adIdList.add(ad.adId);
@@ -63,7 +62,7 @@ public class IndexBuilderService {
         return true;
     }
 
-    public boolean buildForwardIndex(Ad ad) {
+    private boolean buildForwardIndex(Ad ad) {
         boolean result = false;
         try {
             this.adRepository.save(ad);
@@ -74,7 +73,7 @@ public class IndexBuilderService {
         return result;
     }
 
-    public boolean updateBudget(Campaign camp) {
+    private boolean updateBudget(Campaign camp) {
         boolean result = false;
         try {
             this.campaignRepository.save(camp);
@@ -90,31 +89,39 @@ public class IndexBuilderService {
             BufferedReader brAd = new BufferedReader(new FileReader(AdsDataFilePath));
             String line;
             while ((line = brAd.readLine()) != null) {
-                System.out.println(line);
-                JSONObject adJson = new JSONObject(line);
-                Ad ad = new Ad();
-                if (adJson.isNull("adId") || adJson.isNull("campaignId")) {
-                    continue;
-                }
-                ad.adId = adJson.getLong("adId");
-                ad.campaignId = adJson.getLong("campaignId");
-                ad.brand = adJson.isNull("brand") ? "" : adJson.getString("brand");
-                ad.price = adJson.isNull("price") ? 100.0 : adJson.getDouble("price");
-                ad.thumbnail = adJson.isNull("thumbnail") ? "" : adJson.getString("thumbnail");
-                ad.title = adJson.isNull("title") ? "" : adJson.getString("title");
-                ad.detail_url = adJson.isNull("detail_url") ? "" : adJson.getString("detail_url");
-                ad.bidPrice = adJson.isNull("bidPrice") ? 1.0 : adJson.getDouble("bidPrice");
-                ad.pClick = adJson.isNull("pClick") ? 0.0 : adJson.getDouble("pClick");
-                ad.category = adJson.isNull("category") ? "" : adJson.getString("category");
-                ad.description = adJson.isNull("description") ? "" : adJson.getString("description");
-                List<String> keyWordsArrayList = new ArrayList<String>();
-                JSONArray keyWords = adJson.isNull("keyWords") ? null : adJson.getJSONArray("keyWords");
-                for (int j = 0; j < keyWords.length(); j++) {
-                    keyWordsArrayList.add(keyWords.getString(j));
-                }
-                ad.keyWords = keyWordsArrayList.toString();
-                if (!buildInvertIndex(ad) || !buildForwardIndex(ad)) {
-                    LOGGER.error("Can't build index on ad " + ad.adId);
+                try {
+                    System.out.println(line);
+                    if (line.charAt(0) == '[') continue;
+                    line = line.substring(0, line.lastIndexOf('}') + 1);
+                    JSONObject adJson = new JSONObject(line);
+                    Ad ad = new Ad();
+                    if (adJson.isNull("adId") || adJson.isNull("campaignId")) {
+                        continue;
+                    }
+                    ad.adId = adJson.getLong("adId");
+                    ad.campaignId = adJson.getLong("campaignId");
+                    ad.brand = adJson.isNull("brand") ? "" : adJson.getString("brand");
+                    ad.price = adJson.isNull("price") ? 100.0 : adJson.getDouble("price");
+                    ad.thumbnail = adJson.isNull("thumbnail") ? "" : adJson.getString("thumbnail");
+                    ad.title = adJson.isNull("title") ? "" : adJson.getString("title");
+                    ad.detail_url = adJson.isNull("detail_url") ? "" : adJson.getString("detail_url");
+                    ad.bidPrice = adJson.isNull("bidPrice") ? 1.0 : adJson.getDouble("bidPrice");
+                    ad.pClick = adJson.isNull("pClick") ? 0.0 : adJson.getDouble("pClick");
+                    ad.category = adJson.isNull("category") ? "" : adJson.getString("category");
+                    ad.description = adJson.isNull("description") ? "" : adJson.getString("description");
+                    JSONArray keyWordsArray = adJson.isNull("keyWords") ? null : adJson.getJSONArray("keyWords");
+                    StringBuilder keyWords = new StringBuilder();
+                    if (keyWordsArray != null) {
+                        for (int i = 0; i < keyWordsArray.length(); i++) {
+                            keyWords.append(keyWordsArray.getString(i)).append(",");
+                        }
+                    }
+                    ad.keyWords = keyWords.toString();
+                    if (!buildInvertIndex(ad) || !buildForwardIndex(ad)) {
+                        LOGGER.error("Can't build index on ad " + ad.adId);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error(e.getMessage());
                 }
             }
 
