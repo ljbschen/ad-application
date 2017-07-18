@@ -74,10 +74,9 @@ public class Main {
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(OUTPUT, true));
             out.write(s);
+            out.write("\n");
             out.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("Exception ");
 
         }
