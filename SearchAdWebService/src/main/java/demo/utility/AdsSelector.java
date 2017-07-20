@@ -51,9 +51,7 @@ public class AdsSelector {
             for (Long adId : matchedAds.keySet()) {
                 System.out.println("selectAds adId = " + adId);
                 Ad ad = adRepository.getAdByAdId(adId);
-                if (ad == null) {
-                    continue;
-                }
+                if (ad == null) continue;
                 //number of word match query / total number of words in key words
                 double relevanceScore = (matchedAds.get(adId) * 1.0 / ad.getKeyWords().split(",").length);
                 ad.setRelevanceScore(relevanceScore);
@@ -62,7 +60,6 @@ public class AdsSelector {
                 adList.add(ad);
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

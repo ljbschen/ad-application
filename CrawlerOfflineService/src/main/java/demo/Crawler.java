@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Crawler {
@@ -50,6 +51,7 @@ public class Crawler {
                 String id = prod.attr("id");
                 String title = "", thumbnail = "", description = "", brand = "", detail_url = "";
                 String query = feed.getQuery();
+                String[] keyWords = new String[0];
                 int campaignId = feed.getCampaignID();
                 double bidPrice = feed.getBid();
                 int query_group_id = feed.getQueryGroupID();
@@ -59,6 +61,7 @@ public class Crawler {
                 Elements titleEleList = prod.getElementsByAttribute("title");
                 if (titleEleList.size() > 0) {
                     title = titleEleList.get(0).attr("title");
+                    keyWords = title.split(" ");
                 }
 
                 // get thumbnail
@@ -124,6 +127,7 @@ public class Crawler {
                 ad.setBidPrice(bidPrice);
                 ad.setPosition(1);
                 ad.setTitle(title);
+                ad.setKeyWords(Arrays.asList(keyWords));
                 ad.setPrice(price);
                 ad.setThumbnail(thumbnail);
                 ad.setDescription(description);

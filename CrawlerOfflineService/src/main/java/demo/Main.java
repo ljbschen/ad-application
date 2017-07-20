@@ -9,7 +9,7 @@ import java.io.*;
 import java.util.List;
 
 public class Main {
-    private static final String FILENAME = "crawler/rawQuery2.txt";
+    private static final String FILENAME = "CrawlerOfflineService/rawQuery2.txt";
     private static final String OUTPUT = "ad.json";
     private final static Logger logger = Logger.getLogger(Main.class);
 
@@ -77,8 +77,7 @@ public class Main {
             out.write("\n");
             out.close();
         } catch (IOException e) {
-            System.out.println("Exception ");
-
+            System.out.println("Exception");
         }
     }
 

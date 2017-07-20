@@ -2,10 +2,7 @@ package demo.domain;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -14,6 +11,7 @@ import java.util.List;
 public class Ad {
     @Id
     @GeneratedValue
+    private Long id;
     private Long adId;
     private Long campaignId;
     private String keyWords;
