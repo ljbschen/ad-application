@@ -1,7 +1,6 @@
 package demo;
 
 import demo.indexBuilder.IndexBuilderService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
@@ -10,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
-
     @Autowired
     private IndexBuilderService indexBuilderService;
 

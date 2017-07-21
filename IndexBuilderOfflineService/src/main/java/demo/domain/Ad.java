@@ -25,6 +25,7 @@ public class Ad {
     private String title; // required
     private double price; // required
     private String thumbnail; // required
+    @Column(columnDefinition = "LONGBLOB")
     private String description; // required
     private String brand; // required
     private String detail_url; // required

@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -24,8 +25,10 @@ import java.util.*;
 public class IndexBuilderService {
     private final static Logger LOGGER = Logger.getLogger(IndexBuilderService.class);
     private final static int EXP = 0; //0: never expire
-    private static final String AdsDataFilePath = "ads_0502.txt";
-    private static final String BudgetFilePath = "budget.txt";
+    @Value("${ads.path}")
+    private String AdsDataFilePath;
+    @Value("${budget.path}")
+    private String BudgetFilePath;
 
     private AdRepository adRepository;
     private CampaignRepository campaignRepository;
