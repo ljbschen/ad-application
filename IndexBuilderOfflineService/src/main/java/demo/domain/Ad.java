@@ -14,6 +14,7 @@ public class Ad {
     private Long id;
     private Long adId;
     private Long campaignId;
+    @Column(columnDefinition = "LONGBLOB")
     private String keyWords;
     private double relevanceScore;
     private double pClick;
@@ -22,6 +23,7 @@ public class Ad {
     private double qualityScore;
     private double costPerClick;
     private int position;//1: top , 2: bottom
+    @Column(columnDefinition = "LONGBLOB")
     private String title; // required
     private double price; // required
     private String thumbnail; // required

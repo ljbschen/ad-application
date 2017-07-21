@@ -42,6 +42,7 @@ public class IndexBuilderService {
             memcachedClient = new MemcachedClient(
                     new ConnectionFactoryBuilder().setDaemon(true).setFailureMode(FailureMode.Retry).build(),
                     AddrUtil.getAddresses("127.0.0.1:11211"));
+            memcachedClient.flush();
         } catch (IOException e) {
             e.printStackTrace();
             LOGGER.error(e.getMessage());
